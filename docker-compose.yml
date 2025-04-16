@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    image: jhgaylor/me-mcp-server:main
+    container_name: me-mcp-server
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
