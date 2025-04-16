@@ -7,6 +7,7 @@ class Config {
   late final String environment;
   
   // Candidate info
+  late final String profileName;
   late final String resumeText;
   late final String resumeUrl;
   late final String linkedinUrl;
@@ -44,6 +45,7 @@ class Config {
     host = _getEnv('HOST', '0.0.0.0');
     port = int.tryParse(_getEnv('PORT', '3000')) ?? 3000;
     environment = _getEnv('ENVIRONMENT', 'development');
+    profileName = _getEnv('PROFILE_NAME', 'Jake Gaylor');
     resumeText = _getEnv('RESUME_TEXT', _defaultResumeText);
     resumeUrl = _getEnv('RESUME_URL', 'https://jakegaylor.com/JakeGaylor_resume.pdf');
     linkedinUrl = _getEnv('LINKEDIN_URL', 'https://linkedin.com/in/jhgaylor');

@@ -31,7 +31,7 @@ Future<void> main() async {
   );
 
   // Resume Text resource
-  mcpServer.resource("Resume Text", "candidate-info://resume", (uri, extra) async {
+  mcpServer.resource("${config.profileName} Resume Text", "candidate-info://resume", (uri, extra) async {
     return ReadResourceResult(
       contents: [
         TextResourceContents(
@@ -44,7 +44,7 @@ Future<void> main() async {
   });
 
   // Resume url resource
-  mcpServer.resource("Resume URL", "candidate-info://resume-url", (uri, extra) async {
+  mcpServer.resource("${config.profileName} Resume URL", "candidate-info://resume-url", (uri, extra) async {
     return ReadResourceResult(
       contents: [
         TextResourceContents(uri: "candidate-info://resume-url", mimeType: "text/plain", text: config.resumeUrl),
@@ -53,7 +53,7 @@ Future<void> main() async {
   });
 
   // LinkedIn profile resource
-  mcpServer.resource("LinkedIn Profile URL", "candidate-info://linkedin-url", (uri, extra) async {
+  mcpServer.resource("${config.profileName} LinkedIn Profile URL", "candidate-info://linkedin-url", (uri, extra) async {
     stderr.writeln("LinkedIn resource requested");
     return ReadResourceResult(
       contents: [
@@ -67,7 +67,7 @@ Future<void> main() async {
   });
 
   // Website url resource
-  mcpServer.resource("Website URL", "candidate-info://website-url", (uri, extra) async {
+  mcpServer.resource("${config.profileName} Website URL", "candidate-info://website-url", (uri, extra) async {
     return ReadResourceResult(
       contents: [
         TextResourceContents(uri: "candidate-info://website-url", mimeType: "text/plain", text: config.websiteUrl),
@@ -76,7 +76,7 @@ Future<void> main() async {
   });
 
   // Website resource
-  mcpServer.resource("Website Contents", "candidate-info://website-contents", (uri, extra) async {
+  mcpServer.resource("${config.profileName} Website Contents", "candidate-info://website-contents", (uri, extra) async {
     final response = await http.get(Uri.parse(config.websiteUrl));
     if (response.statusCode == 200) {
       return ReadResourceResult(
