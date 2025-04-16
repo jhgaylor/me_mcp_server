@@ -1,12 +1,12 @@
 import 'dart:io';
 
-
 import 'package:me_mcp_server/me_mcp_server.dart';
-import 'package:me_mcp_server/src/multiServerSseManager.dart';
+import 'package:me_mcp_server/src/statelessSseServerManager.dart';
+
 Future<void> main() async {
   final config = Config.instance;
 
-  final sseServerManager = MultiServerSseManager(
+  final sseServerManager = StatelessSseServerManager(
     () => createMcpServer(),
   );
   try {

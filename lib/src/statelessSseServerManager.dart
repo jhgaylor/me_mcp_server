@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:mcp_dart/mcp_dart.dart';
 
 /// Manages Server-Sent Events (SSE) connections and routes HTTP requests.
-class MultiServerSseManager {
+class StatelessSseServerManager {
   /// Map to store active SSE transports, keyed by session ID.
   final Map<String, SseServerTransport> activeSseTransports = {};
 
@@ -16,7 +16,7 @@ class MultiServerSseManager {
   /// Path for sending messages to the server.
   final String messagePath;
 
-  MultiServerSseManager(
+  StatelessSseServerManager(
     this.makeMcpServer, {
     this.ssePath = '/sse',
     this.messagePath = '/messages',
