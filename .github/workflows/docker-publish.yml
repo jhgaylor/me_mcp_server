@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: jhgaylor/me_mcp_server
+  IMAGE_NAME: jhgaylor/me-mcp-server
 
 jobs:
   build:
