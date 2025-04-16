@@ -1,5 +1,5 @@
 # Use latest stable channel SDK.
-FROM dart:3.7.2
+FROM dart:3.7.2 as build
 
 # Resolve app dependencies.
 WORKDIR /app
@@ -17,5 +17,5 @@ COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/
 
 # Start server.
-EXPOSE 8080
+EXPOSE 3000
 CMD ["/app/bin/server"]
