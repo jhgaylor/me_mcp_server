@@ -13,7 +13,7 @@ Future<void> main() async {
   );
 
   mcpServer.prompt(
-    "JobSearch",
+    "JobSearch for ${config.profileName}",
     description: "Make instructions for a job search that this candidate will excel at",
     callback: (args, extra) async {
       return GetPromptResult(
