@@ -136,12 +136,12 @@ To run the server locally:
 | ENVIRONMENT | Environment (development, production) | development |
 | PROFILE_NAME | Your profile/candidate name | Jane Smith |
 | ENV_VAR_FILE_PATH | Custom path to .env file | .env |
-| RESUME_URL | URL to the resume | https://jakegaylor.com/JakeGaylor_resume.pdf |
-| LINKEDIN_URL | URL to LinkedIn profile | https://linkedin.com/in/jhgaylor |
-| WEBSITE_URL | URL to personal website | https://jakegaylor.com |
+| RESUME_URL | URL to the resume | https://example.com/resume.pdf |
+| LINKEDIN_URL | URL to LinkedIn profile | https://linkedin.com/in/example |
+| WEBSITE_URL | URL to personal website | https://example.com |
 | RESUME_TEXT | Full text content of the resume | Default resume text in config.dart |
-| MIN_SALARY | Minimum salary for job search | 200000 |
-| MAX_SALARY | Maximum salary for job search | 300000 |
+| MIN_SALARY | Minimum salary for job search | 100000 |
+| MAX_SALARY | Maximum salary for job search | 500000 |
 | JOB_LOCATION | Preferred job location | Remote |
 | COMPANY_TYPE | Preferred company type | Startup |
 | SERVER_NAME | Name of the MCP server | me-mcp-server |
