@@ -1,4 +1,4 @@
-/// A MCP server for learning about and interacting with Jake Gaylor
+/// A MCP server for learning about and interacting with You.
 library me_mcp_server;
 
 export 'src/config.dart';
