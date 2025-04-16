@@ -18,10 +18,20 @@ Future<void> main() async {
     print('Server listening on http://${config.host}:${config.port}');
 
     await for (final request in server) {
-      sseServerManager.handleRequest(request);
+      // Handle each request asynchronously without awaiting
+      unawaited(sseServerManager.handleRequest(request));
     }
   } catch (e) {
     print('Error starting server: $e');
     exitCode = 1;
   }
+}
+
+/// Marks a future as intentionally not being awaited.
+void unawaited(Future<void> future) {
+  // Catch any errors to prevent unhandled exceptions
+  future.catchError((error, stackTrace) {
+    print('Unhandled error in request: $error');
+    print(stackTrace);
+  });
 }
