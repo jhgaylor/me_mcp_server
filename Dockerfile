@@ -15,7 +15,7 @@ COPY . .
 # Ensure the application has all dependencies
 RUN dart pub get --offline
 
-# Default environment variables
+# Default environment variables (these will be used if not provided at runtime or in .env)
 ENV HOST=0.0.0.0
 ENV PORT=3000
 ENV ENVIRONMENT=production

@@ -7,6 +7,10 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+    # You can either use env_file to load all variables from a file:
+    # env_file:
+    #   - .env
+    # Or specify environment variables directly:
     environment:
       # Server configuration
       - HOST=0.0.0.0

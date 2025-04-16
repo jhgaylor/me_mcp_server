@@ -1,6 +1,6 @@
 # Me MCP Server
 
-A MCP (Machine Chat Protocol) server for learning about and interacting with Jake Gaylor.
+A MCP (Model Context Protocol) server for learning about and interacting with Jake Gaylor.
 
 ## Running the server
 
@@ -16,16 +16,26 @@ This will start the server on port 3000.
 
 ### Environment Variables
 
-You can customize the server by setting environment variables. See `.env.example` for all available options.
+You can customize the server by setting environment variables in several ways:
 
-When using Docker Compose, modify the `environment` section in `docker-compose.yml`.
+1. **Using a .env file** (recommended for local development):
+   ```bash
+   cp .env.example .env
+   # Edit .env with your preferred values
+   ```
+   The server automatically loads the .env file when it starts.
 
-When running locally, you can create a `.env` file based on `.env.example`:
+2. **Using Docker Compose**:
+   Modify the `environment` section in `docker-compose.yml`.
 
-```bash
-cp .env.example .env
-# Edit .env with your preferred values
-```
+3. **Using system environment variables**:
+   Set environment variables directly in your shell or deployment platform.
+
+The application uses the following precedence for environment variables:
+1. Directly passed values (when instantiating Config manually)
+2. Values from .env file
+3. System environment variables (automatically included)
+4. Default values
 
 ### Running Locally
 
@@ -33,7 +43,12 @@ To run the server locally:
 
 1. Ensure you have Dart SDK 3.7.2 or later installed
 2. Install dependencies: `dart pub get`
-3. Run the server: `dart bin/server.dart`
+3. Set up your configuration (optional):
+   ```bash
+   cp .env.example .env
+   # Edit .env with your preferred values
+   ```
+4. Run the server: `dart bin/server.dart`
 
 ## Configuration Options
 
@@ -66,3 +81,29 @@ docker build -t jhgaylor/me-mcp-server:local .
 ```bash
 docker run -p 3000:3000 -e PORT=3000 jhgaylor/me-mcp-server:local
 ```
+
+## Docker and Environment Variables
+
+When using Docker, you have several options for configuring environment variables:
+
+1. **Using docker-compose.yml**:
+   ```yaml
+   environment:
+     - VARIABLE_NAME=value
+   ```
+
+2. **Using an env_file in docker-compose.yml**:
+   ```yaml
+   env_file:
+     - .env
+   ```
+
+3. **Using -e when running with docker run**:
+   ```bash
+   docker run -p 3000:3000 -e MIN_SALARY=250000 -e MAX_SALARY=350000 jhgaylor/me-mcp-server:main
+   ```
+
+4. **Using --env-file with docker run**:
+   ```bash
+   docker run -p 3000:3000 --env-file .env jhgaylor/me-mcp-server:main
+   ```

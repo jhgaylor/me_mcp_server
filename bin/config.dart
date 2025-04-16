@@ -1,62 +1,60 @@
-import 'dart:io';
+import 'package:dotenv/dotenv.dart';
 
 class Config {
   // Server configuration
-  final String host;
-  final int port;
-  final String environment;
+  late final String host;
+  late final int port;
+  late final String environment;
   
   // Candidate info
-  final String resumeText;
-  final String resumeUrl;
-  final String linkedinUrl;
-  final String websiteUrl;
+  late final String resumeText;
+  late final String resumeUrl;
+  late final String linkedinUrl;
+  late final String websiteUrl;
   
   // Job search parameters
-  final String minSalary;
-  final String maxSalary;
-  final String jobLocation;
-  final String companyType;
+  late final String minSalary;
+  late final String maxSalary;
+  late final String jobLocation;
+  late final String companyType;
   
   // Server info
-  final String serverName;
-  final String serverVersion;
+  late final String serverName;
+  late final String serverVersion;
+  
+  static final DotEnv _env = DotEnv(includePlatformEnvironment: true);
+  
+  static void loadEnv([String path = '.env']) {
+    try {
+      _env.load([path]);
+      print('Loaded environment from $path');
+    } catch (e) {
+      print('No .env file found at $path, using default environment variables');
+    }
+  }
 
-  Config({
-    // Server configuration
-    String? host,
-    String? portStr,
-    String? environment,
+  static String _getEnv(String key, String defaultValue) {
+    return _env[key] ?? defaultValue;
+  }
+
+  Config() {
+    // Load environment variables first
+    loadEnv();
     
-    // Candidate info
-    String? resumeText,
-    String? resumeUrl,
-    String? linkedinUrl,
-    String? websiteUrl,
-    
-    // Job search parameters
-    String? minSalary,
-    String? maxSalary,
-    String? jobLocation,
-    String? companyType,
-    
-    // Server info
-    String? serverName,
-    String? serverVersion,
-  }) : 
-    host = host ?? Platform.environment['HOST'] ?? '0.0.0.0',
-    port = int.tryParse(portStr ?? Platform.environment['PORT'] ?? '3000') ?? 3000,
-    environment = environment ?? Platform.environment['ENVIRONMENT'] ?? 'development',
-    resumeText = resumeText ?? Platform.environment['RESUME_TEXT'] ?? _defaultResumeText,
-    resumeUrl = resumeUrl ?? Platform.environment['RESUME_URL'] ?? 'https://jakegaylor.com/JakeGaylor_resume.pdf',
-    linkedinUrl = linkedinUrl ?? Platform.environment['LINKEDIN_URL'] ?? 'https://linkedin.com/in/jhgaylor',
-    websiteUrl = websiteUrl ?? Platform.environment['WEBSITE_URL'] ?? 'https://jakegaylor.com',
-    minSalary = minSalary ?? Platform.environment['MIN_SALARY'] ?? '200000',
-    maxSalary = maxSalary ?? Platform.environment['MAX_SALARY'] ?? '300000',
-    jobLocation = jobLocation ?? Platform.environment['JOB_LOCATION'] ?? 'Remote',
-    companyType = companyType ?? Platform.environment['COMPANY_TYPE'] ?? 'Startup',
-    serverName = serverName ?? Platform.environment['SERVER_NAME'] ?? 'me-mcp-server',
-    serverVersion = serverVersion ?? Platform.environment['SERVER_VERSION'] ?? '1.0.0';
+    host = _getEnv('HOST', '0.0.0.0');
+    port = int.tryParse(_getEnv('PORT', '3000')) ?? 3000;
+    environment = _getEnv('ENVIRONMENT', 'development');
+    resumeText = _getEnv('RESUME_TEXT', _defaultResumeText);
+    resumeUrl = _getEnv('RESUME_URL', 'https://jakegaylor.com/JakeGaylor_resume.pdf');
+    linkedinUrl = _getEnv('LINKEDIN_URL', 'https://linkedin.com/in/jhgaylor');
+    websiteUrl = _getEnv('WEBSITE_URL', 'https://jakegaylor.com');
+    minSalary = _getEnv('MIN_SALARY', '200000');
+    maxSalary = _getEnv('MAX_SALARY', '300000');
+    jobLocation = _getEnv('JOB_LOCATION', 'Remote');
+    companyType = _getEnv('COMPANY_TYPE', 'Startup');
+    serverName = _getEnv('SERVER_NAME', 'me-mcp-server');
+    serverVersion = _getEnv('SERVER_VERSION', '1.0.0');
+  }
     
   static final Config instance = Config();
   
