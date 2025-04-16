@@ -186,3 +186,11 @@ When using Docker, you have several options for configuring environment variable
    ```bash
    docker run -p 3000:3000 --env-file .env jhgaylor/me-mcp-server:main
    ```
+
+## Deployment Examples
+
+### Deploying to a Custom Domain
+
+You can deploy this MCP server to your own domain. Here's an example of a deployment that runs at `mcp.jakegaylor.com`:
+
+- GitHub Repository: [jhgaylor/jakegaylor-com-mcp-server](https://github.com/jhgaylor/jakegaylor-com-mcp-server)
