@@ -14,6 +14,67 @@ docker-compose up -d
 
 This will start the server on port 3000.
 
+## Transport Options
+
+This MCP server supports two different transport mechanisms:
+
+### SSE (Server-Sent Events) Transport
+
+The SSE transport allows the server to communicate over HTTP with clients that support server-sent events. This is useful for web-based clients or any client that can establish an HTTP connection.
+
+To run the server with SSE transport:
+
+```bash
+dart bin/sse_server.dart
+```
+
+The SSE server will start on the configured host and port (default: 0.0.0.0:3000).
+
+### Stdio Transport
+
+The Stdio transport uses standard input/output streams for communication. This is ideal for integration with desktop clients like Claude Desktop that launch the MCP server as a subprocess.
+
+To run the server with Stdio transport:
+
+```bash
+dart bin/stdio_server.dart
+```
+
+#### Configuring Claude Desktop
+
+To use the MCP server with Claude Desktop, add the following to your Claude configuration:
+
+```json
+{
+  "mcpServers": {
+    "jake_gaylor_mcp": {
+      "command": "dart",
+      "args": [
+        "path/to/bin/stdio_server.dart"
+      ]
+    }
+  }
+}
+```
+
+Alternatively, you can compile the server to a standalone executable:
+
+```bash
+dart compile exe bin/stdio_server.dart -o ./mcp_server
+```
+
+And then configure Claude Desktop to use the compiled version:
+
+```json
+{
+  "mcpServers": {
+    "jake_gaylor_mcp": {
+      "command": "path/to/mcp_server"
+    }
+  }
+}
+```
+
 ### Environment Variables
 
 You can customize the server by setting environment variables in several ways:
@@ -48,7 +109,9 @@ To run the server locally:
    cp .env.example .env
    # Edit .env with your preferred values
    ```
-4. Run the server: `dart bin/server.dart`
+4. Run the server with your preferred transport: 
+   - SSE: `dart bin/sse_server.dart`
+   - Stdio: `dart bin/stdio_server.dart`
 
 ## Configuration Options
 
