@@ -1,6 +1,20 @@
 # Me MCP Server
 
-A MCP (Model Context Protocol) server for learning about and interacting with Jake Gaylor.
+A MCP (Model Context Protocol) server for learning about and interacting with YOU.
+
+## Features
+
+This MCP server provides the following capabilities:
+
+### Prompts
+- **JobSearch** - Generate job search instructions tailored to your profile with specified salary range, location, and company type preferences.
+
+### Resources
+- **Resume Text** - Access your full resume text (`candidate-info://resume`)
+- **Resume URL** - Get the URL to your resume PDF (`candidate-info://resume-url`)
+- **LinkedIn Profile URL** - Access your LinkedIn profile (`candidate-info://linkedin-url`)
+- **Website URL** - Get your personal website URL (`candidate-info://website-url`)
+- **Website Contents** - Fetch and analyze the HTML contents of your website (`candidate-info://website-contents`)
 
 ## Running the server
 
@@ -47,7 +61,7 @@ To use the MCP server with Claude Desktop, add the following to your Claude conf
 ```json
 {
   "mcpServers": {
-    "jake_gaylor_mcp": {
+    "me_mcp": {
       "command": "dart",
       "args": [
         "path/to/bin/stdio_server.dart"
@@ -68,7 +82,7 @@ And then configure Claude Desktop to use the compiled version:
 ```json
 {
   "mcpServers": {
-    "jake_gaylor_mcp": {
+    "me_mcp": {
       "command": "path/to/mcp_server"
     }
   }
@@ -120,6 +134,8 @@ To run the server locally:
 | HOST | Host address to bind to | 0.0.0.0 |
 | PORT | Port to listen on | 3000 |
 | ENVIRONMENT | Environment (development, production) | development |
+| PROFILE_NAME | Your profile/candidate name | Jane Smith |
+| ENV_VAR_FILE_PATH | Custom path to .env file | .env |
 | RESUME_URL | URL to the resume | https://jakegaylor.com/JakeGaylor_resume.pdf |
 | LINKEDIN_URL | URL to LinkedIn profile | https://linkedin.com/in/jhgaylor |
 | WEBSITE_URL | URL to personal website | https://jakegaylor.com |
