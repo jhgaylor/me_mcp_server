@@ -194,3 +194,4 @@ When using Docker, you have several options for configuring environment variable
 You can deploy this MCP server to your own domain. Here's an example of a deployment that runs at `mcp.jakegaylor.com`:
 
 - GitHub Repository: [jhgaylor/jakegaylor-com-mcp-server](https://github.com/jhgaylor/jakegaylor-com-mcp-server)
+
