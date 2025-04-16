@@ -16,7 +16,7 @@ COPY . .
 RUN dart pub get --offline
 
 # Start the server
-CMD ["dart", "bin/sse_server.dart"]
+CMD ["dart", "bin/sse_multi_server.dart"]
 
 # Document that the container listens on port 3000
 EXPOSE 3000
