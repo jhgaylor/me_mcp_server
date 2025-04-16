@@ -8,4 +8,27 @@ services:
       - "3000:3000"
     restart: unless-stopped
     environment:
+      # Server configuration
+      - HOST=0.0.0.0
+      - PORT=3000
       - ENVIRONMENT=production
+      
+      # Candidate info
+      - RESUME_URL=https://jakegaylor.com/JakeGaylor_resume.pdf
+      - LINKEDIN_URL=https://linkedin.com/in/jhgaylor
+      - WEBSITE_URL=https://jakegaylor.com
+      # Resume text can be provided as an environment variable if you want to override the default
+      # - RESUME_TEXT=Custom resume text here
+      
+      # Job search parameters
+      - MIN_SALARY=200000
+      - MAX_SALARY=300000
+      - JOB_LOCATION=Remote
+      - COMPANY_TYPE=Startup
+      
+      # Server info
+      - SERVER_NAME=me-mcp-server
+      - SERVER_VERSION=1.0.0
+    # Add volumes if needed
+    # volumes:
+    #   - ./data:/app/data
