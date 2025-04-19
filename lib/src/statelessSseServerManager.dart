@@ -8,7 +8,7 @@ class StatelessSseServerManager {
   final Map<String, SseServerTransport> activeSseTransports = {};
 
   /// Function that creates and returns an MCP Server instance.
-  final McpServer Function() makeMcpServer;
+  final Future<McpServer> Function() makeMcpServer;
 
   /// Path for establishing SSE connections.
   final String ssePath;
@@ -69,7 +69,7 @@ class StatelessSseServerManager {
         print("Error on SSE transport (Session: $sessionId): $error");
       };
 
-      final mcpServer = makeMcpServer();
+      final mcpServer = await makeMcpServer();
       await mcpServer.connect(transport);
       print("SSE transport connected, session ID: $sessionId");
     } catch (e) {

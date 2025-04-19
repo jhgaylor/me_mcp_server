@@ -8,7 +8,7 @@ Future<void> main() async {
   await config.loadConfig();
 
   final sseServerManager = StatelessSseServerManager(
-    () => createMcpServer(),
+    () async => await createMcpServer(),
   );
   try {
     final server = await HttpServer.bind(
