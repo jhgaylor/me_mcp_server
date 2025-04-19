@@ -4,7 +4,8 @@ import 'package:me_mcp_server/me_mcp_server.dart';
 import 'package:me_mcp_server/src/statelessSseServerManager.dart';
 
 Future<void> main() async {
-  final config = Config.instance;
+  final config = Config();
+  await config.loadConfig();
 
   final sseServerManager = StatelessSseServerManager(
     () => createMcpServer(),

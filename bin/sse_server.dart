@@ -4,8 +4,8 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:me_mcp_server/me_mcp_server.dart';
 
 Future<void> main() async {
-  final config = Config.instance;
-  final mcpServer = createMcpServer();
+  final config = await Config.getInstance();
+  final mcpServer = await createMcpServer();
 
   final sseServerManager = SseServerManager(mcpServer);
   try {

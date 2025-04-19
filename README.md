@@ -13,6 +13,7 @@ This MCP server provides the following capabilities:
 - **Resume Text** - Access your full resume text (`candidate-info://resume`)
 - **Resume URL** - Get the URL to your resume PDF (`candidate-info://resume-url`)
 - **LinkedIn Profile URL** - Access your LinkedIn profile (`candidate-info://linkedin-url`)
+- **GitHub Profile URL** - Access your GitHub profile (`candidate-info://github-url`)
 - **Website URL** - Get your personal website URL (`candidate-info://website-url`)
 - **Website Contents** - Fetch and analyze the HTML contents of your website (`candidate-info://website-contents`)
 
@@ -89,28 +90,110 @@ And then configure Claude Desktop to use the compiled version:
 }
 ```
 
+## Configuration
+
+The server uses a hybrid configuration approach:
+
+1. **Server settings** - Configured using environment variables
+2. **Personal information** - Configured using a `me.yaml` file
+
 ### Environment Variables
 
-You can customize the server by setting environment variables in several ways:
+Server-related settings are configured through environment variables:
 
-1. **Using a .env file** (recommended for local development):
-   ```bash
-   cp .env.example .env
-   # Edit .env with your preferred values
-   ```
-   The server automatically loads the .env file when it starts.
+| Variable | Description | Default |
+|----------|-------------|---------|
+| HOST | Host address to bind to | 0.0.0.0 |
+| PORT | Port to listen on | 3000 |
+| ENVIRONMENT | Environment (development, production) | development |
 
-2. **Using Docker Compose**:
-   Modify the `environment` section in `docker-compose.yml`.
+### YAML Configuration
 
-3. **Using system environment variables**:
-   Set environment variables directly in your shell or deployment platform.
+Personal information and job search preferences are configured through the `me.yaml` file.
 
-The application uses the following precedence for environment variables:
-1. Directly passed values (when instantiating Config manually)
-2. Values from .env file
-3. System environment variables (automatically included)
-4. Default values
+#### Initializing Configuration
+
+To create a default configuration file:
+
+```bash
+dart bin/me_init.dart [path]
+```
+
+This will generate a `me.yaml` file (or at the specified path) with default values that you can edit.
+
+#### Example Configuration
+
+```yaml
+# Personal information
+name: Jake Gaylor
+resume_url: https://example.com/resume.pdf
+website_url: https://jakegaylor.com
+linkedin_url: https://linkedin.com/in/jakegaylor
+github_url: https://github.com/jhgaylor
+
+# Optional content (can be loaded from URLs above if not specified)
+resume_text: |
+  Jake Gaylor
+  Software Engineer
+
+  Experience:
+  - Example Company (2020-Present)
+    Senior Software Engineer
+  
+  Skills:
+  - Dart, JavaScript, TypeScript
+  - Cloud Infrastructure
+
+website_text: ""  # Will be fetched from website_url if empty
+
+# Job search preferences
+job_search:
+  min_salary: 150000
+  max_salary: 250000
+  location: Remote
+  company_type: Startup
+  industry: Technology
+  description: "Looking for senior engineering roles with focus on cloud infrastructure"
+```
+
+### YAML Configuration Options
+
+| Section | Option | Description | Default |
+|---------|--------|-------------|---------|
+| - | name | Your profile/candidate name | Jane Smith |
+| - | resume_url | URL to the resume | https://example.com/resume.pdf |
+| - | linkedin_url | URL to LinkedIn profile | https://linkedin.com/in/example |
+| - | github_url | URL to GitHub profile | https://github.com/example |
+| - | website_url | URL to personal website | https://example.com |
+| - | resume_text | Full text content of the resume | An empty resume. |
+| job_search | min_salary | Minimum salary for job search | 100000 |
+| job_search | max_salary | Maximum salary for job search | 500000 |
+| job_search | location | Preferred job location | Remote |
+| job_search | company_type | Preferred company type | Startup |
+| job_search | industry | Preferred industry | Technology |
+| job_search | description | Additional job search details | "" |
+
+### Type-Safe Configuration (For Developers)
+
+The YAML configuration is parsed into strongly-typed Dart objects:
+
+```dart
+import 'package:me_mcp_server/me_mcp_server.dart';
+
+// Create a configuration programmatically
+final config = MeConfig(
+  name: 'Jane Smith',
+  resumeUrl: 'https://example.com/resume.pdf',
+  jobSearch: JobSearchConfig(
+    minSalary: 150000,
+    maxSalary: 250000,
+    location: 'Remote',
+  ),
+);
+
+// Convert to YAML
+final yamlString = configToYaml(config);
+```
 
 ### Running Locally
 
@@ -118,34 +201,14 @@ To run the server locally:
 
 1. Ensure you have Dart SDK 3.7.2 or later installed
 2. Install dependencies: `dart pub get`
-3. Set up your configuration (optional):
+3. Create a `me.yaml` file in the root directory with your configuration
    ```bash
-   cp .env.example .env
-   # Edit .env with your preferred values
+   dart bin/me_init.dart
    ```
-4. Run the server with your preferred transport: 
+4. Set any environment variables as needed
+5. Run the server with your preferred transport: 
    - SSE: `dart bin/sse_server.dart`
    - Stdio: `dart bin/stdio_server.dart`
-
-## Configuration Options
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| HOST | Host address to bind to | 0.0.0.0 |
-| PORT | Port to listen on | 3000 |
-| ENVIRONMENT | Environment (development, production) | development |
-| PROFILE_NAME | Your profile/candidate name | Jane Smith |
-| ENV_VAR_FILE_PATH | Custom path to .env file | .env |
-| RESUME_URL | URL to the resume | https://example.com/resume.pdf |
-| LINKEDIN_URL | URL to LinkedIn profile | https://linkedin.com/in/example |
-| WEBSITE_URL | URL to personal website | https://example.com |
-| RESUME_TEXT | Full text content of the resume | Default resume text in config.dart |
-| MIN_SALARY | Minimum salary for job search | 100000 |
-| MAX_SALARY | Maximum salary for job search | 500000 |
-| JOB_LOCATION | Preferred job location | Remote |
-| COMPANY_TYPE | Preferred company type | Startup |
-| SERVER_NAME | Name of the MCP server | me-mcp-server |
-| SERVER_VERSION | Version of the MCP server | 1.0.0 |
 
 ## Development
 
@@ -158,33 +221,37 @@ docker build -t jhgaylor/me-mcp-server:local .
 ### Running the Docker Image
 
 ```bash
-docker run -p 3000:3000 -e PORT=3000 jhgaylor/me-mcp-server:local
+docker run -p 3000:3000 \
+  -v $(pwd)/me.yaml:/app/me.yaml \
+  -e PORT=3000 \
+  -e ENVIRONMENT=production \
+  jhgaylor/me-mcp-server:local
 ```
 
-## Docker and Environment Variables
+## Docker Configuration
 
-When using Docker, you have several options for configuring environment variables:
+When using Docker, you can:
 
-1. **Using docker-compose.yml**:
-   ```yaml
-   environment:
-     - VARIABLE_NAME=value
-   ```
-
-2. **Using an env_file in docker-compose.yml**:
-   ```yaml
-   env_file:
-     - .env
-   ```
-
-3. **Using -e when running with docker run**:
+1. **Mount your me.yaml file**:
    ```bash
-   docker run -p 3000:3000 -e MIN_SALARY=250000 -e MAX_SALARY=350000 jhgaylor/me-mcp-server:main
+   -v $(pwd)/me.yaml:/app/me.yaml
    ```
 
-4. **Using --env-file with docker run**:
+2. **Set environment variables**:
    ```bash
-   docker run -p 3000:3000 --env-file .env jhgaylor/me-mcp-server:main
+   -e HOST=0.0.0.0 -e PORT=3000 -e ENVIRONMENT=production
+   ```
+
+3. **Use docker-compose.yml**:
+   ```yaml
+   services:
+     mcp-server:
+       volumes:
+         - ./me.yaml:/app/me.yaml
+       environment:
+         - HOST=0.0.0.0
+         - PORT=3000
+         - ENVIRONMENT=production
    ```
 
 ## Deployment Examples

@@ -1,0 +1,52 @@
+# Me MCP Server Configuration
+
+# Personal information
+name: Jane Doe
+resume_url: https://example.com/jane_doe_resume.pdf
+website_url: https://janedoe.com
+linkedin_url: https://linkedin.com/in/janedoe
+github_url: https://github.com/janedoe
+
+# Optional content (can be loaded from URLs above if not specified)
+resume_text: |
+  Jane Doe
+  Embedded Systems Engineer
+
+  Experience:
+  - IoT Solutions Inc. (2019-Present)
+    Senior Embedded Engineer
+  
+  Skills:
+  - C, C++, Assembly
+  - RTOS, Embedded Linux
+  - PCB Design, Hardware Integration
+  - Microcontrollers (ARM, AVR)
+
+website_text: ""  # Will be fetched from website_url if empty
+
+# Job search preferences
+job_search:
+  min_salary: 130000
+  max_salary: 210000
+  location: Hybrid
+  company_type: Manufacturing
+  industry: Electronics/IoT
+  description: "Seeking embedded systems engineering roles with focus on firmware development and hardware integration"
+  prompt: |
+    Create a tailored job search strategy for {{name}}, who is looking for the following:
+
+    REQUIREMENTS:
+    - Salary range: ${{job_search.min_salary}} - ${{job_search.max_salary}}
+    - Location: {{job_search.location}}
+    - Company type: {{job_search.company_type}}
+    - Industry: {{job_search.industry}}
+
+    ADDITIONAL CONTEXT:
+    {{job_search.description}}
+
+    Provide a structured job search plan including:
+    1. Top job platforms to focus on
+    2. Key search terms to use
+    3. Types of roles to target
+    4. Companies that might be a good fit
+    5. How to emphasize relevant skills in applications 

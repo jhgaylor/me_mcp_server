@@ -4,8 +4,10 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:me_mcp_server/me_mcp_server.dart';
 
 Future<void> main() async {
-  final config = Config.instance;
-  final mcpServer = createMcpServer();
+  final config = Config();
+  await config.loadConfig();
+
+  final mcpServer = await createMcpServer();
 
   try {
     final server = await HttpServer.bind(

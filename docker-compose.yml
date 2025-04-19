@@ -2,11 +2,16 @@ version: '3.8'
 
 services:
   mcp-server:
-    image: jhgaylor/me-mcp-server:main
+    # image: jhgaylor/me-mcp-server:main
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: me-mcp-server
     ports:
       - "3000:3000"
     restart: unless-stopped
+    volumes:
+      - ./me.yaml:/app/me.yaml
     # You can either use env_file to load all variables from a file:
     env_file:
       - .env.example

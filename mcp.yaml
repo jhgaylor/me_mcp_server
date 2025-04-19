@@ -1,0 +1,34 @@
+an mcp client that takes resume pdf, links , etc and makes a me-mcp-server repo for a person.
+like a static site generator.
+me-maker jake.yaml --anthropic-api-key $ANTHROPIC_API_KEY
+me-maker jake.yaml --deploy
+me-maker jake.yaml --serve # outputs the config for claude desktop to connect
+me-maker jake.yaml --language python --anthropic-api-key $ANTHROPIC_API_KEY
+me-maker jake.yaml --llm-endpoint http://ollama:3.2/ 
+
+the config file, the arguments and the language template should always result in the same mcp client except maybe the llm will interpret content differently
+
+the llm converts the resume to text, reads website contents to text, pulls down info from linkedin, etc.
+everything else is basically just a static site generator. so we could use an existing generator and just
+generate the config for it.
+
+lets add a test client that makes sure the generated mcp server is correct and shows the user what it will be giving the llm.
+
+schemaVersion: 1
+
+access:
+  public: true # if true we will advertise access to your server for people to connect to
+
+scaling:
+  minDuration: 5m
+  reapAfterIdleTime: 2m
+  maxConcurrency: 10
+
+transport:
+  type: stdio
+
+runtime:
+  type: docker
+  source:
+    docker:
+      image: "jhgaylor/me-mcp-server:main"

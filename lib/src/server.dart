@@ -1,30 +1,33 @@
 import 'dart:io';
-
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:http/http.dart' as http;
 import 'config.dart';
 
 /// Creates and configures the MCP server with all resources
-McpServer createMcpServer() {
-  final config = Config.instance;
+Future<McpServer> createMcpServer([String? configFilePath]) async {
+  final config = Config(configFilePath);
+  await config.loadConfig();
 
   final mcpServer = McpServer(
     Implementation(name: config.serverName, version: config.serverVersion),
     options: ServerOptions(capabilities: ServerCapabilities()),
   );
 
+  // TODO: deploy the new version to jakegaylor.com 
+  // TODO: once this is all wrapped up, make an mcp server that "deploys" a me-mcp by rendering an mcp.yaml file.
+  // TODO: -> then make a tool that takes an mcp.yaml file and runs it it in fly.io using flycd. profit.
   mcpServer.prompt(
-    "JobSearch for ${config.profileName}",
+    "Job Search for ${config.me.name}",
     description:
         "Make instructions for a job search that this candidate will excel at",
     callback: (args, extra) async {
+      // Use the template from config
+      final promptText = config.me.getJobSearchPrompt();
       return GetPromptResult(
         messages: [
           PromptMessage(
             role: PromptMessageRole.user,
             content: TextContent(
-              text:
-                  'Search for jobs that the candidate will excel at, with a minimum salary of ${config.minSalary} and a maximum salary of ${config.maxSalary}, in the location of ${config.jobLocation}, and the company type of ${config.companyType}.',
+              text: promptText,
             ),
           ),
         ],
@@ -33,95 +36,118 @@ McpServer createMcpServer() {
   );
 
   // Resume Text resource
-  mcpServer.resource(
-    "${config.profileName} Resume Text",
-    "candidate-info://resume",
-    (uri, extra) async {
-      return ReadResourceResult(
-        contents: [
-          TextResourceContents(
-            uri: "candidate-info://resume",
-            mimeType: "text/plain",
-            text: config.resumeText,
-          ),
-        ],
-      );
-    },
-  );
-
-  // Resume url resource
-  mcpServer.resource(
-    "${config.profileName} Resume URL",
-    "candidate-info://resume-url",
-    (uri, extra) async {
-      return ReadResourceResult(
-        contents: [
-          TextResourceContents(
-            uri: "candidate-info://resume-url",
-            mimeType: "text/plain",
-            text: config.resumeUrl,
-          ),
-        ],
-      );
-    },
-  );
-
-  // LinkedIn profile resource
-  mcpServer.resource(
-    "${config.profileName} LinkedIn Profile URL",
-    "candidate-info://linkedin-url",
-    (uri, extra) async {
-      stderr.writeln("LinkedIn resource requested");
-      return ReadResourceResult(
-        contents: [
-          TextResourceContents(
-            uri: "linkedin-url",
-            mimeType: "text/plain",
-            text: config.linkedinUrl,
-          ),
-        ],
-      );
-    },
-  );
-
-  // Website url resource
-  mcpServer.resource(
-    "${config.profileName} Website URL",
-    "candidate-info://website-url",
-    (uri, extra) async {
-      return ReadResourceResult(
-        contents: [
-          TextResourceContents(
-            uri: "candidate-info://website-url",
-            mimeType: "text/plain",
-            text: config.websiteUrl,
-          ),
-        ],
-      );
-    },
-  );
-
-  // Website resource
-  mcpServer.resource(
-    "${config.profileName} Website Contents",
-    "candidate-info://website-contents",
-    (uri, extra) async {
-      final response = await http.get(Uri.parse(config.websiteUrl));
-      if (response.statusCode == 200) {
+  if (config.me.resumeText != null) {
+    mcpServer.resource(
+      "${config.me.name} Resume Text",
+      "candidate-info://resume-text",
+      (uri, extra) async {
         return ReadResourceResult(
           contents: [
             TextResourceContents(
-              uri: "candidate-info://website-contents",
-              mimeType: "text/html",
-              text: response.body,
-              additionalProperties: {'type': 'html', 'url': config.websiteUrl},
+              uri: "candidate-info://resume-text",
+              mimeType: "text/plain",
+              text: config.me.resumeText!,
             ),
           ],
         );
-      }
-      throw Exception('Failed to fetch website content');
-    },
-  );
+      },
+    );
+  }
+
+  // Resume url resource
+  if (config.me.resumeUrl != null) {
+    mcpServer.resource(
+      "${config.me.name} Resume URL",
+      "candidate-info://resume-url",
+      (uri, extra) async {
+        return ReadResourceResult(
+          contents: [
+            TextResourceContents(
+              uri: "candidate-info://resume-url",
+              mimeType: "text/plain",
+              text: config.me.resumeUrl!,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // LinkedIn profile resource
+  if (config.me.linkedinUrl != null) {
+    mcpServer.resource(
+      "${config.me.name} LinkedIn Profile URL",
+      "candidate-info://linkedin-url",
+      (uri, extra) async {
+        return ReadResourceResult(
+          contents: [
+            TextResourceContents(
+              uri: "linkedin-url",
+              mimeType: "text/plain",
+              text: config.me.linkedinUrl!,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // GitHub profile resource
+  if (config.me.githubUrl != null) {
+    mcpServer.resource(
+      "${config.me.name} GitHub Profile URL",
+      "candidate-info://github-url",
+      (uri, extra) async {
+        return ReadResourceResult(
+          contents: [
+            TextResourceContents(
+              uri: "github-url",
+              mimeType: "text/plain",
+              text: config.me.githubUrl!,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Website url resource
+  if (config.me.websiteUrl != null) {
+    mcpServer.resource(
+      "${config.me.name} Website URL",
+      "candidate-info://website-url",
+      (uri, extra) async {
+        return ReadResourceResult(
+          contents: [
+            TextResourceContents(
+              uri: "candidate-info://website-url",
+              mimeType: "text/plain",
+              text: config.me.websiteUrl!,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Website resource
+  if (config.me.websiteText != null) {
+    mcpServer.resource(
+      "${config.me.name} Website Text",
+      "candidate-info://website-text",
+      (uri, extra) async {
+        return ReadResourceResult(
+          contents: [
+            TextResourceContents(
+              uri: "candidate-info://website-text",
+              mimeType: "text/plain",
+              text: config.me.websiteText!,
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   return mcpServer;
 }
