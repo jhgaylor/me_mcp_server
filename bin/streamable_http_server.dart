@@ -22,7 +22,7 @@ Future<void> main() async {
     final streamableTransport = StreamableHTTPServerTransport(
       options: StreamableHTTPServerTransportOptions(
         // Generate a unique session ID for each client connection
-        sessionIdGenerator: () => generateUUID(),
+        sessionIdGenerator: null, // () => generateUUID(),
         // Enable JSON responses for simple request/response scenarios
         enableJsonResponse: true,
       ),
