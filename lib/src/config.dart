@@ -15,11 +15,8 @@ class Config {
   late final String serverVersion;
 
   bool _initialized = false;
-  String _configPath = '';
 
-  Config([String? configPath]) {
-    _configPath = configPath ?? 'me.yaml';
-  }
+  Config();
 
   // Get environment variable with fallback
   static String _getEnvVar(String name, String defaultValue) {
@@ -28,12 +25,14 @@ class Config {
 
   Future<void> loadConfig() async {
     if (_initialized) return;
+
+    final configPath = _getEnvVar('ME_CFG_PATH', 'me.yaml');
     
-    stderr.writeln('Loading configuration from $_configPath');
+    stderr.writeln('Loading configuration from $configPath');
     stderr.writeln('Current working directory: ${Directory.current.path}');
     
     // Parse the structured configuration
-    me = await MeConfig.fromYamlFile(_configPath);
+    me = await MeConfig.fromYamlFile(configPath);
     
     // Server configuration - from environment variables
     host = _getEnvVar('HOST', '0.0.0.0');

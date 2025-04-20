@@ -11,7 +11,6 @@ Future<McpServer> createMcpServer([String? configFilePath]) async {
     options: ServerOptions(capabilities: ServerCapabilities()),
   );
 
-  // TODO: deploy the new version to jakegaylor.com 
   // TODO: once this is all wrapped up, make an mcp server that "deploys" a me-mcp by rendering an mcp.yaml file.
   // TODO: -> then make a tool that takes an mcp.yaml file and runs it it in fly.io using flycd. profit.
   mcpServer.prompt(
