@@ -2,8 +2,8 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'config.dart';
 
 /// Creates and configures the MCP server with all resources
-Future<McpServer> createMcpServer([String? configFilePath]) async {
-  final config = Config(configFilePath);
+Future<McpServer> createMcpServer() async {
+  final config = Config();
   await config.loadConfig();
 
   final mcpServer = McpServer(
