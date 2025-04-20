@@ -11,6 +11,37 @@ Future<McpServer> createMcpServer() async {
     options: ServerOptions(capabilities: ServerCapabilities()),
   );
 
+  mcpServer.tool(
+    "contact_candidate",
+    description: "Contact the candidate with a message",
+    inputSchemaProperties: {
+      "type": "object",
+      "properties": {
+        "return_email": {"type": "string"},
+        "subject": {"type": "string"},
+        "message": {"type": "string"},
+      },
+      "required": ["return_email", "subject", "message"],
+    },
+    callback: ({args, extra}) async {
+      final returnEmail = args?["return_email"] as String;
+      final subject = args?["subject"] as String;
+      final message = args?["message"] as String;
+      
+      print("Contact request received from: $returnEmail");
+      print("Subject: $subject");
+      print("Message: $message");
+
+      return CallToolResult(
+        content: [
+          TextContent(
+            text: "Your message has been sent to ${config.me.name}",
+          ),
+        ],
+      );
+    },
+  );
+
   // TODO: once this is all wrapped up, make an mcp server that "deploys" a me-mcp by rendering an mcp.yaml file.
   // TODO: -> then make a tool that takes an mcp.yaml file and runs it it in fly.io using flycd. profit.
   mcpServer.prompt(
